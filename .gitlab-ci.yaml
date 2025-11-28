@@ -1,0 +1,58 @@
+# -------------------------------------------
+# GitLab CI/CD Pipeline for ML Project
+# Stages: test → build → deploy
+# Deploy = Push Docker image to GitLab Registry
+# -------------------------------------------
+
+stages:
+  - test
+  - build
+  - deploy
+
+# -------------------------
+# 1. TEST STAGE
+# -------------------------
+test_job:
+  stage : test 
+  image: python:3.10
+  script:
+    - pip install -r requirements.txt
+    - pytest -q
+  artifacts:
+    paths:
+      - .cache/pip
+    expire_in: 1 hour
+
+
+# -------------------------
+# 2. BUILD DOCKER IMAGE
+# -------------------------
+build_docker:
+  stage : build 
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+  only:
+    - main
+
+
+# -------------------------
+# 3. DEPLOY TO GITLAB REGISTRY
+# -------------------------
+deploy_registry:
+  stage : deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    # Login to GitLab Container Registry
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+
+  script:
+    # Push the built Docker image
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+  only:
+    - main
