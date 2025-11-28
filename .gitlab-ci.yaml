@@ -35,7 +35,7 @@ build_docker:
   script:
     - docker build -t $CI_REGISTRY_IMAGE:latest .
   only:
-    - main
+    - master
 
 
 # -------------------------
@@ -55,4 +55,4 @@ deploy_registry:
     - docker push $CI_REGISTRY_IMAGE:latest
 
   only:
-    - main
+    - master
