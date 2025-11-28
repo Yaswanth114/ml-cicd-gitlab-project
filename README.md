@@ -11,7 +11,7 @@ The pipeline trains a model, runs tests, builds a Docker image, and can deploy t
 - Runs unit tests to check accuracy  
 - Builds a Docker image using a Dockerfile  
 - Uses a CI/CD pipeline  
-- Works on GitHub or GitLab  
+- Works on GitLab  
 - Shows the basics of ML automation
 
 ---
@@ -83,4 +83,5 @@ To build the Docker image manually:
 ## Author
 
 Yaswanth Sompalli
+
 GitHub: https://github.com/Yaswanth114
